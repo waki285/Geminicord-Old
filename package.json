@@ -10,8 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@streamparser/json": "^0.0.18",
-    "axios": "^1.6.2",
+    "@google/generative-ai": "^0.1.2",
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1"
   }
