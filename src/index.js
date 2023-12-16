@@ -56,6 +56,7 @@ client.on("messageCreate", async (message) => {
       .setDescription("2000文字を超えるため、一部のみ表示しています。")
     msg.edit({ content: text.slice(0, 1999), embeds: [text.length > 1999 ? embed : []].flat() });
     clearInterval(to);
+    console.log(text.map(x => x.charCodeAt(0)));
     conversations.push({ role: "user", parts: content });
     conversations.push({ role: "model", parts: text });
   }
