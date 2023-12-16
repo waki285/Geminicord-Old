@@ -32,6 +32,7 @@ client.on("messageCreate", async (message) => {
     const res = await chat.sendMessageStream(content);
     let text = "";
     let ended = false;
+    let spFlag = false;
     (async () => {
       try {
         const decoder = new TextDecoder();
@@ -45,6 +46,7 @@ client.on("messageCreate", async (message) => {
       console.error(e);
       text = "エラー。規制にかかったかな？";
       ended = true;
+      spFlag = true;
     }
     })();
 
@@ -61,10 +63,13 @@ client.on("messageCreate", async (message) => {
         }
       }, 1000);
     });
+    if (text.length === 0) {
+      text = "No response. 規制にかかったかな？";
+      spFlag = true;
+    }
     const embed = new EmbedBuilder()
-      .setDescription("2000文字を超えるため、一部のみ表示しています。")
-    if (text.length === 0) text = "No response. 規制にかかったかな？";
-    msg.edit({ content: text.slice(0, 1999), embeds: [text.length > 1999 ? embed : []].flat() });
+      .setDescription(spFlag ? text:"2000文字を超えるため、一部のみ表示しています。")
+    msg.edit({ content: spFlag ? null:text.slice(0, 1999), embeds: [text.length > 1999 || spFlag ? embed : []].flat() });
     clearInterval(to);
     conversations.push({ role: "user", parts: content });
     conversations.push({ role: "model", parts: text });
