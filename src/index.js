@@ -16,7 +16,7 @@ client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
   if (message.channel?.topic?.includes("Gemini")) {
     if (message.content.startsWith("#")) return;
-    const content = message.content.trim();
+    const content = message.cleanContent.trim();
     const msg = await message.reply("Generating...");
     const res = await axios.post(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:streamGenerateContent?key=${process.env.GEMINI_PRO_KEY}`,
