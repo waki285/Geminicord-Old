@@ -25,6 +25,7 @@ client.on("messageCreate", async (message) => {
       return;
     }
     const content = message.cleanContent.trim();
+    if (!content) return;
     const msg = await message.reply("Generating...");
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
     const chat = await model.startChat({ history: conversations });
@@ -32,13 +33,19 @@ client.on("messageCreate", async (message) => {
     let text = "";
     let ended = false;
     (async () => {
-      const decoder = new TextDecoder();
+      try {
+        const decoder = new TextDecoder();
       for await (const chunk of res.stream) {
         const chunkText = decoder.decode(Buffer.from(chunk.text()), { stream: true });
         text += chunkText;
       }
       text += decoder.decode();
       ended = true;
+    } catch (e) {
+      console.error(e);
+      text = "エラー。規制にかかったかな？";
+      ended = true;
+    }
     })();
 
     const to = setInterval(() => {
