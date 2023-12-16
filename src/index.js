@@ -42,6 +42,7 @@ client.on("messageCreate", async (message) => {
     })();
 
     const to = setInterval(() => {
+      if (!text.length) return;
       msg.edit(text.slice(0, 1999));
     }, 3000);
 
@@ -55,6 +56,7 @@ client.on("messageCreate", async (message) => {
     });
     const embed = new EmbedBuilder()
       .setDescription("2000文字を超えるため、一部のみ表示しています。")
+    if (text.length === 0) text = "No response. 規制にかかったかな？";
     msg.edit({ content: text.slice(0, 1999), embeds: [text.length > 1999 ? embed : []].flat() });
     clearInterval(to);
     conversations.push({ role: "user", parts: content });
