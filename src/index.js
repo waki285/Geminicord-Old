@@ -32,11 +32,12 @@ client.on("messageCreate", async (message) => {
     let text = "";
     let ended = false;
     (async () => {
+      const decoder = new TextDecoder();
       for await (const chunk of res.stream) {
-        const chunkText = chunk.text();
-        console.log(chunkText);
+        const chunkText = decoder.decode(Buffer.from(chunk.text()), { stream: true });
         text += chunkText;
       }
+      text += decoder.decode();
       ended = true;
     })();
 
@@ -56,10 +57,13 @@ client.on("messageCreate", async (message) => {
       .setDescription("2000文字を超えるため、一部のみ表示しています。")
     msg.edit({ content: text.slice(0, 1999), embeds: [text.length > 1999 ? embed : []].flat() });
     clearInterval(to);
-    console.log(text.split("").map(x => x.charCodeAt(0)));
     conversations.push({ role: "user", parts: content });
     conversations.push({ role: "model", parts: text });
   }
 });
 
 void client.login(process.env.DISCORD_TOKEN);
+
+process.on("uncaughtException", (err) => {
+  console.error(err);
+});
